@@ -40,3 +40,22 @@ spec:
       resources:
         requests:
           storage: 1Gi
+
+lifecycle:
+  postStart:
+    exec:
+      command:
+      - /bin/sh
+      - -c
+      - |
+        mongo --eval "rs.initiate();"
+        sleep 10
+        mongo --eval "rs.add('mongodb-1.mongodb.default.svc.cluster.local')"
+        sleep 10
+        mongo --eval "rs.add('mongodb-2.mongodb.default.svc.cluster.local')"
+        sleep 10
+        mongo --eval "rs.add('mongodb-3.mongodb.default.svc.cluster.local')"
+        sleep 10
+        mongo --eval "db.createUser({ user: '$(MONGO_INITDB_ROOT_USERNAME)', pwd: '$(MONGO_INITDB_ROOT_PASSWORD)', roles: [{ role: 'readWrite', db: 'admin' }]})"
+
+          
