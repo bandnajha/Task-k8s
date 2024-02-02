@@ -1,0 +1,27 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mongodb-backup-cronjob
+spec:
+  schedule: "0 0 * * *" # Execute daily at midnight
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mongodb-backup-container
+            image: mongo:latest # Use MongoDB client image
+            command: ["/bin/bash", "/usr/local/bin/mongodb-backup.sh"]
+            volumeMounts:
+            - name: backup-script
+              mountPath: /usr/local/bin
+            - name: backup-storage
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup-script
+            configMap:
+              name: mongodb-backup-script
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: mongodb-backup-pvc
