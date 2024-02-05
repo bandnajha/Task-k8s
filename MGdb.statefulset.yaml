@@ -2,16 +2,21 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mongodb
+  namespace: database
 spec:
-  serviceName: "mongodb"
-  replicas: 3
+  serviceName: "mongodb-headless"
+  replicas: 2
+  UpdateStrategy:
+      type: RollingUpdate
   selector:
     matchLabels:
-      app: mongodb
+      app.kubernetes.io./name : mongodb
+      app.kubernetes.io/component: mongodb
   template:
     metadata:
       labels:
-        app: mongodb
+         app.kubernetes.io./name : mongodb
+         app.kubernetes.io/component: mongodb
     spec:
       containers:
       - name: mongodb
