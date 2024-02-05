@@ -35,11 +35,11 @@ spec:
               name: mongodb-credentials
               key: password
         volumeMounts:
-        - name: mongodb-data
+        - name: pvc
           mountPath: /data/db
   volumeClaimTemplates:
   - metadata:
-      name: mongodb-data
+      name: pvc
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
